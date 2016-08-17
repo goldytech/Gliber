@@ -2,74 +2,109 @@
 
 namespace Gliber
 {
-    using System.ComponentModel;
     using Microsoft.Extensions.DependencyInjection;
 
-    public class GlibMapper
+    using Newtonsoft.Json;
+
+    public interface IGlibMapper<TSrc, TTgt>
+    {
+        TTgt MappedObject { get; }
+
+        IMapper<TSrc, TTgt> WithOneToOneMapping();
+    }
+
+    public class GlibMapper<TSrc, TTgt> : IObserver<TTgt>, IGlibMapper<TSrc, TTgt>
     {
         /// <summary>
         /// The service collection.
         /// </summary>
         private readonly IServiceCollection serviceCollection;
 
-          /// <summary>
+        /// <summary>
         /// The service provider.
         /// </summary>
         private readonly IServiceProvider serviceProvider;
+
         public GlibMapper()
         {
-            this.serviceCollection = new ServiceCollection();
+         this.serviceCollection = new ServiceCollection();
+
+            this.serviceCollection.AddSingleton<IGlibMapper<TSrc, TTgt>, GlibMapper<TSrc, TTgt>>();  
+          this.serviceCollection.AddSingleton<IMapper<TSrc, TTgt>, Mapper<TSrc, TTgt>>();
             this.serviceProvider = this.serviceCollection.BuildServiceProvider();
-            this.serviceCollection.AddSingleton<ITarget, Target>();
-            this.serviceCollection.AddSingleton<IConfig, Config>();
-
+            this.Subscribe<TTgt>(
+                (tgt) =>
+                    {
+                        this.MappedObject = tgt;
+                        this.Unsubscribe();
+                    }
+                   );
         }
-        public ITarget MapFrom<TSrc>() where TSrc : class
+
+        public TTgt MappedObject { get; private set; }
+
+        //private Func<IServiceProvider, Target> TargetFactory()
+        //{
+        //    return this.GetTarget;
+        //}
+
+        //private Target GetTarget(IServiceProvider serviceProvider)
+        //{
+        //    return new Target(this.serviceProvider);
+        //}
+
+        public IMapper<TSrc, TTgt> WithOneToOneMapping()
         {
-            this.serviceProvider.GetService<IConfig>().SourceType = typeof(TSrc);
-          return this.serviceProvider.GetService<ITarget>();
+            return this.serviceProvider.GetService<IMapper<TSrc,TTgt>>();
         }
-    }
 
-    public class Target :ITarget
-    {
-        private readonly IServiceProvider serviceProvider;
+        //public ITarget MapFrom<TSrc>()
+        //{
+        //    this.serviceProvider.GetService<IConfig>().SourceType = Activator.CreateInstance(typeof(TSrc));
+        //      return this.serviceProvider.GetService<ITarget>();
+        //    }
+        //}
 
-        internal Target(IServiceProvider serviceProvider)
+        //public class Mapper : IMapper
+        //{
+        //    private readonly IServiceProvider serviceProvider;
+
+        //    public Mapper(IServiceProvider serviceProvider)
+        //    {
+        //        this.serviceProvider = serviceProvider;
+        //    }
+
+        //    //public TTgt CreateMap<TTgt>()
+        //    //{
+
+        //    //    var config = this.serviceProvider.GetRequiredService<IConfig>();
+        //    //    var sourceEntity = config.SourceType;
+        //    //    var targetEnity = config.TargetType;
+        //    //    var json = JsonConvert.SerializeObject(sourceEntity);
+        //    //    var target = JsonConvert.DeserializeObject<TTgt>(json);
+        //    //    return target;
+
+        //    //}
+
+        //    //private TTgt Map<TSrc, TTgt>(TSrc source)
+        //    //{
+        //    //    var json = JsonConvert.SerializeObject(source);
+        //    //    return JsonConvert.DeserializeObject<TTgt>(json);
+        //    //}
+        //}
+        public void OnCompleted()
         {
-            this.serviceProvider = serviceProvider;
+            
         }
 
-        public IOptions MapTo<TTgt>()
+        public void OnError(Exception error)
         {
-            this.serviceProvider.GetService<IConfig>().SourceType = typeof(TTgt);
-            return this.serviceProvider.GetService<IOptions>();
+            
         }
 
-
-    }
-
-    public interface ITarget
-    {
-        IOptions MapTo<T>();
-
-       
-    }
-
-    public interface IOptions
-    {
-    }
-
-    internal interface IConfig
-    {
-        Type SourceType { get; set; }
-        Type TargetType { get; set; }
-    }
-
-    class Config : IConfig
-    {
-        public Type SourceType { get; set; }
-
-        public Type TargetType { get; set; }
+        public void OnNext(TTgt value)
+        {
+            this.MappedObject = value;
+        }
     }
 }
