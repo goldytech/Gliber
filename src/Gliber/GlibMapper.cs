@@ -29,7 +29,8 @@ namespace Gliber
         {
          this.serviceCollection = new ServiceCollection();
 
-            this.serviceCollection.AddSingleton<IGlibMapper<TSrc, TTgt>, GlibMapper<TSrc, TTgt>>();  
+            this.serviceCollection.AddSingleton<IGlibMapper<TSrc, TTgt>, GlibMapper<TSrc, TTgt>>();
+            this.serviceCollection.AddSingleton<IMappingValidator, MappingValidator>(); 
           this.serviceCollection.AddSingleton<IMapper<TSrc, TTgt>, Mapper<TSrc, TTgt>>();
             this.serviceProvider = this.serviceCollection.BuildServiceProvider();
             this.Subscribe<TTgt>(
