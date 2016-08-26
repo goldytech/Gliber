@@ -2,18 +2,12 @@
 
 namespace Gliber
 {
+    using System.Collections.Generic;
+
     using Microsoft.Extensions.DependencyInjection;
+   
 
-    using Newtonsoft.Json;
-
-    public interface IGlibMapper<TSrc, TTgt>
-    {
-        TTgt MappedObject { get; }
-
-        IMapper<TSrc, TTgt> WithOneToOneMapping();
-    }
-
-    public class GlibMapper<TSrc, TTgt> : IObserver<TTgt>, IGlibMapper<TSrc, TTgt>
+    public class GlibMapper<TSrc, TTgt> 
     {
         /// <summary>
         /// The service collection.
@@ -29,15 +23,16 @@ namespace Gliber
         {
          this.serviceCollection = new ServiceCollection();
 
-            this.serviceCollection.AddSingleton<IGlibMapper<TSrc, TTgt>, GlibMapper<TSrc, TTgt>>();
-            this.serviceCollection.AddSingleton<IMappingValidator, MappingValidator>(); 
-          this.serviceCollection.AddSingleton<IMapper<TSrc, TTgt>, Mapper<TSrc, TTgt>>();
+          //  this.serviceCollection.AddSingleton<IGlibMapper<TSrc, TTgt>, GlibMapper<TSrc, TTgt>>();
+           // this.serviceCollection.AddSingleton<IConfig, Config>();
+            this.serviceCollection.AddTransient<IMappingValidator, MappingValidator>(); 
+          //this.serviceCollection.AddTransient<IMapper<TSrc, TTgt>, OneToOneMapper<TSrc, TTgt>>();
             this.serviceProvider = this.serviceCollection.BuildServiceProvider();
             this.Subscribe<TTgt>(
                 (tgt) =>
                     {
                         this.MappedObject = tgt;
-                        this.Unsubscribe();
+                      //  this.Unsubscribe<TTgt>();
                     }
                    );
         }
@@ -56,7 +51,29 @@ namespace Gliber
 
         public IMapper<TSrc, TTgt> WithOneToOneMapping()
         {
-            return this.serviceProvider.GetService<IMapper<TSrc,TTgt>>();
+          //  this.serviceProvider.GetService<IConfig>().HasOneToOneMapping = true;
+            //this.serviceProvider.GetService<IConfig>().SelectedPropertiesOfSourceObject = null;
+            //return this.serviceProvider.GetService<IMapper<TSrc,TTgt>>();
+            return new OneToOneMapper<TSrc, TTgt>(this.serviceProvider.GetService<IMappingValidator>());
+        }
+
+        /// <summary>
+        /// The with selective properties from source.
+        /// </summary>
+        /// <param name="propertiestobeMapped">
+        /// The property expression.
+        /// </param>
+        /// <typeparam name="TProp">
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="IMapper"/>.
+        /// </returns>
+        public IMapper<TSrc, TTgt> WithSelectivePropertiesFromSource(IEnumerable<string> propertiestobeMapped)
+        {
+           // this.serviceProvider.GetService<IConfig>().SelectedPropertiesOfSourceObject = propertiestobeMapped;
+            //this.serviceProvider.GetService<IConfig>().HasOneToOneMapping = false;
+           // return this.serviceProvider.GetService<IMapper<TSrc, TTgt>>();
+           return new SelectivePropertiesMapper<TSrc, TTgt>(this.serviceProvider.GetService<IMappingValidator>(), propertiestobeMapped);
         }
 
         //public ITarget MapFrom<TSrc>()
@@ -66,11 +83,11 @@ namespace Gliber
         //    }
         //}
 
-        //public class Mapper : IMapper
+        //public class OneToOneMapper : IMapper
         //{
         //    private readonly IServiceProvider serviceProvider;
 
-        //    public Mapper(IServiceProvider serviceProvider)
+        //    public OneToOneMapper(IServiceProvider serviceProvider)
         //    {
         //        this.serviceProvider = serviceProvider;
         //    }

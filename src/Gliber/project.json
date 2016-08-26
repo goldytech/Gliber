@@ -1,5 +1,8 @@
 {
   "version": "1.0.0-*",
+  "authors": [ "GoldyTech" ],
+  "title": "Gliber",
+  "description": "Object Mapper in a Glib(Fluent) way",
 
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
@@ -13,5 +16,6 @@
     "netstandard1.6": {
       "imports": "dnxcore50"
     }
-  }
+  },
+  "scripts": { "postcompile": [ "dotnet pack --no-build --configuration %compile:Configuration%" ] }
 }

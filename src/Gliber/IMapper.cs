@@ -1,7 +1,7 @@
 ﻿namespace Gliber
 {
     /// <summary>
-    /// The Mapper interface.
+    /// The OneToOneMapper interface.
     /// </summary>
     /// <typeparam name="TSrc">
     /// </typeparam>

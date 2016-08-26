@@ -1,12 +1,16 @@
 ﻿namespace Gliber
 {
-    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
 
     internal class Config : IConfig
     {
-        public object SourceType { get; set; }
-
-        public object TargetType { get; set; }
+        public Config()
+        {
+            this.SelectedPropertiesOfSourceObject = null;
+            this.HasOneToOneMapping = false;
+        }
+        public IEnumerable<string> SelectedPropertiesOfSourceObject { get; set; }
 
         public bool HasOneToOneMapping { get; set; }
     }

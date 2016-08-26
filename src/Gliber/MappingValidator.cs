@@ -12,7 +12,7 @@ namespace Gliber
         {
             this.Exception = null;
         }
-        public void ForOneToOneMappingSourceAndTargetPropertiesMustMatch<TSrc, TTgt>()
+        public void ForMappingSourceAndTargetPropertiesMustBeMatched<TSrc, TTgt>()
         {
             var sourceProperties = typeof(TSrc).GetProperties();
             var targetProperties = typeof(TTgt).GetProperties();
