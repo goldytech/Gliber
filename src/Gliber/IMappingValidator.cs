@@ -6,6 +6,6 @@ namespace Gliber
     {
         Exception Exception { get; }
 
-        void ForOneToOneMappingSourceAndTargetPropertiesMustMatch<TSrc, TTgt>();
+        void ForMappingSourceAndTargetPropertiesMustBeMatched<TSrc, TTgt>();
     }
 }

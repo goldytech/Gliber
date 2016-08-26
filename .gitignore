@@ -18,3 +18,4 @@
 /tests/Gliber.Tests/obj/Debug/netstandard1.6/dotnet-compile.assemblyinfo.cs
 /src/Gliber/bin/Debug/netstandard1.6/Gliber.dll
 /.vs/config/applicationhost.config
+*.nupkg
