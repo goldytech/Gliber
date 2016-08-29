@@ -1,5 +1,6 @@
 namespace Gliber
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
@@ -14,6 +15,11 @@ namespace Gliber
         {
             this.mappingValidator = mappingValidator;
             this.selectedpropertiesofSource = selectedpropertiesofSource;
+        }
+
+        public ICustomMapper<TSrc, TTgt, TProp> AddCustomMappingFor<TProp>(System.Linq.Expressions.Expression<Func<TSrc, TProp>> propertyExpression)
+        {
+            throw new NotImplementedException();
         }
 
         public void CreateMap(TSrc source)

@@ -27,6 +27,7 @@
                 if (!this.selectedProperties.Contains(prop.Name))
                 {
                     prop.Remove();
+                    
                 }
             }
 

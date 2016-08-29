@@ -1,6 +1,6 @@
 namespace Gliber
 {
-
+    using System;
     using Newtonsoft.Json;
 
     internal class OneToOneMapper<TSrc, TTgt> : IMapper<TSrc, TTgt>
@@ -14,6 +14,11 @@ namespace Gliber
         {
             this.mappingValidator = mappingValidator;
             
+        }
+
+        public ICustomMapper<TSrc, TTgt, TProp> AddCustomMappingFor<TProp>(System.Linq.Expressions.Expression<Func<TSrc, TProp>> propertyExpression)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

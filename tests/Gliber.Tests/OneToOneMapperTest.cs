@@ -13,7 +13,7 @@
 
             var src = new Source { IntProp = 100, StrProp = "Afzal" };
             var mapper = new GlibMapper<Source, Target>();
-            mapper.WithOneToOneMapping().CreateMap(src);
+            mapper.WithOneToOneMappingForAll().CreateMap(src);
 
             Assert.NotNull(mapper.MappedObject);
         }
@@ -28,7 +28,7 @@
             Assert.Throws<Exception>(
                 () =>
                     {
-                        mapper.WithOneToOneMapping().CreateMap(src);
+                        mapper.WithOneToOneMappingForAll().CreateMap(src);
                     });
         }
     }

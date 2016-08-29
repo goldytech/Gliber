@@ -49,7 +49,7 @@ namespace Gliber
         //    return new Target(this.serviceProvider);
         //}
 
-        public IMapper<TSrc, TTgt> WithOneToOneMapping()
+        public IMapper<TSrc, TTgt> WithOneToOneMappingForAll()
         {
           //  this.serviceProvider.GetService<IConfig>().HasOneToOneMapping = true;
             //this.serviceProvider.GetService<IConfig>().SelectedPropertiesOfSourceObject = null;
